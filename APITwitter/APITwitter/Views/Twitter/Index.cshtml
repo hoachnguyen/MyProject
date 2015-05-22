@@ -1,0 +1,68 @@
+﻿@model List<APITwitter.Models.Timeline>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script src="@Url.Content("~/Scripts/jquery-latest.js")" type="text/javascript"></script>
+    <link href="~/Content/Layout.css" rel="stylesheet" />
+    <title>Twitter</title>
+</head>
+
+<body>
+    <div align="center">
+        <div class="button-display">
+                <input align="left" id="refresh" class="button" type="submit" value="Refresh" />
+            @using (Html.BeginForm("Post", "Twitter"))
+            {
+                <input class="button" id="btpost" type="submit" value="Post Tweet" />
+                <p>@Html.TextArea("txtTweet", new { @class = "text-area" })</p>
+            }
+            
+
+        </div>
+        <div id="divrefresh">
+            <table class="zui-table zui-table-zebra zui-table-horizontal">
+                @foreach (var item in Model)
+                {
+                    <thead>
+                        <tr>
+                            <th>@item.Name</th>
+                            <th>@item.ScreenName</th>
+                            <th>@item.CreatedAt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-tweet" colspan="3">@item.TextPost</td>
+                        </tr>
+                    </tbody>
+                }
+            </table>
+        </>
+    </div>
+
+    <script>
+
+    $(document).ready(function () {
+        $("#txtTweet").keypress(function (event) {
+            if (event.which == 13) {
+                $("#btpost").click();
+            }
+        });
+    });
+
+    $('#refresh').click(function(e){ 
+        e.preventDefault();
+        $('#divrefresh').hide().load(location.href + " #divrefresh").fadeIn('slow'); 
+    });
+    </script>
+
+</body>
+</html>
+

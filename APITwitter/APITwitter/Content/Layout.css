@@ -1,0 +1,84 @@
+﻿.zui-table {
+    border: solid 1px #DDEEEE;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font: normal 13px Arial, sans-serif;
+}
+    .zui-table thead th {
+        background-color: #DDEFEF;
+        border: solid 1px #DDEEEE;
+        color: #336B6B;
+        padding: 10px;
+        text-align: left;
+        text-shadow: 1px 1px 1px #fff;
+    }
+    .zui-table tbody td {
+        border: solid 1px #DDEEEE;
+        color: #333;
+        padding: 10px;
+        text-shadow: 1px 1px 1px #fff;
+    }
+.zui-table-zebra tbody tr:nth-child(odd) {
+    background-color: #fff;
+}
+.zui-table-zebra tbody tr:nth-child(even) {
+    background-color: #EEF7EE;
+}
+.zui-table-horizontal tbody td {
+    border-left: none;
+    border-right: none;
+}
+.text-tweet {
+    font-family: times, Times New Roman, times-roman, georgia, serif;
+    font-size: 30px;
+    line-height: 20px;
+    color: #58D3F7;
+}
+.text-area {
+    background-image: url(images/form_bg.jpg);
+    background-repeat: repeat-x;
+    border: 1px solid #d1c7ac;
+    width: 500px;
+    height: 120px;
+    color: #333333;
+    padding: 3px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-family: tahoma, arial, sans-serif;
+}
+.button {
+    border-top: 1px solid #96d1f8;
+    background: #65a9d7;
+    background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+    background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
+    background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+    background: -ms-linear-gradient(top, #3e779d, #65a9d7);
+    background: -o-linear-gradient(top, #3e779d, #65a9d7);
+    padding: 5px 10px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+    -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+    box-shadow: rgba(0,0,0,1) 0 1px 0;
+    text-shadow: rgba(0,0,0,.4) 0 1px 0;
+    color: white;
+    font-size: 14px;
+    font-family: Georgia, serif;
+    text-decoration: none;
+    vertical-align: middle;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+    .button:hover {
+        border-top-color: #28597a;
+        background: #28597a;
+        color: #ccc;
+    }
+    .button:active {
+        border-top-color: #1b435e;
+        background: #1b435e;
+    }
+.button-display {
+    display: inline-block;
+}
