@@ -17,6 +17,8 @@ namespace APITwitter.App_Code
         private const string oauthSignatureMethod = "HMAC-SHA1";
 
         // oauth application keys
+        //the oauth_token parameter represents a user’s permission to share access to their account
+        //the oauth_consumer_key identifies which application is making the request
         private const string oauthToken = "3221099095-xFD2Hy5GIEFsfDhpDiIYBOShJ5SUkpRYIFX6wgs";
         private const string oauthTokenSecret = "3Mnp8X7GyMgMqmiupQkvy6FSaEe3PVe6a9hq5kQv3ot0d";
         private const string oauthConsumerKey = "dRk4UoDSBj1YMm4D5S8pkgDgm";
@@ -28,34 +30,34 @@ namespace APITwitter.App_Code
         public string GetTimeline()
         {
             // message api details
-            var type = "GET";
-            var resource_url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
+            var method = "GET";
+            var resourceUrl = "https://api.twitter.com/1.1/statuses/user_timeline.json";
 
-            // make the request
-            string responseData = MakeRequest(screenName, type, resource_url);
+            // make the request and get json data
+            string responseData = MakeRequest(screenName, method, resourceUrl);
 
             return responseData;
-
         }
 
         public void PostTweet(string status)
         {
             // message api details
-            var type = "POST";
+            var method = "POST";
             var resourceUrl = "https://api.twitter.com/1.1/statuses/update.json";
 
-            // make the request
-            string request = MakeRequest(status, type, resourceUrl);
+            // make the request to twitter server
+            string request = MakeRequest(status, method, resourceUrl);
         }
 
-        public string MakeRequest(string status, string type, string resourceUrl)
+        public string MakeRequest(string status, string method, string resourceUrl)
         {
             var postBody = "";
             var responseData = "";
 
-            string authHeader = CreateHeader(status, resourceUrl, type);
+            //building the header string
+            string authHeader = CreateHeader(status, resourceUrl, method);
 
-            if (type == "GET")
+            if (method == "GET")
             {
                 postBody = "screen_name=" + Uri.EscapeDataString(status);
                 resourceUrl += "?" + postBody;
@@ -65,10 +67,10 @@ namespace APITwitter.App_Code
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(resourceUrl);
             request.Headers.Add("Authorization", authHeader);
-            request.Method = type;
+            request.Method = method;
             request.ContentType = "application/x-www-form-urlencoded";
 
-            if (type == "POST")
+            if (method == "POST")
             {
                 postBody = "status=" + Uri.EscapeDataString(status);
                 using (Stream stream = request.GetRequestStream())
@@ -90,14 +92,17 @@ namespace APITwitter.App_Code
 
         public string CreateHeader(string status, string resourceUrl, string type)
         {
-            // unique request details
+            //the oauth_nonce parameter is a unique token the application should generate for each unique request
             var OauthNonce = Convert.ToBase64String(
                 new ASCIIEncoding().GetBytes(DateTime.Now.Ticks.ToString()));
+
+            //the oauth_timestamp parameter indicates when the request was created
             var TimeSpan = DateTime.UtcNow
                 - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             var OauthTimeStamp = Convert.ToInt64(TimeSpan.TotalSeconds).ToString();
 
-            // create oauth signature
+            // the oauth_signature parameter contains a value which is generated 
+            //by running all of the other request parameters and two secret values through a signing algorithm
             string OauthSignature = CreateOauthSignature(status, resourceUrl, OauthNonce, OauthTimeStamp, type);
             
             // create the request header
@@ -119,11 +124,15 @@ namespace APITwitter.App_Code
             return authHeader;
         }
 
-        public string CreateOauthSignature(string status, string resourceUrl, string oauthNonce, string oauthTimestamp, string type)
+        public string CreateOauthSignature(string status, 
+                                    string resourceUrl, 
+                                    string oauthNonce, 
+                                    string oauthTimestamp, 
+                                    string method)
         {
             string OauthSignature = "";
-            
-            var BaseString = CreateBaseString(type, status, resourceUrl, oauthNonce, oauthTimestamp);
+            //building base string for the oauth_signature
+            var BaseString = CreateBaseString(method, status, resourceUrl, oauthNonce, oauthTimestamp);
 
             var compositeKey = string.Concat(Uri.EscapeDataString(oauthConsumerSecret),
                                     "&", Uri.EscapeDataString(oauthTokenSecret));
@@ -137,13 +146,17 @@ namespace APITwitter.App_Code
             return OauthSignature;
         }
 
-        public string CreateBaseString(string type, string status, string ResourceUrl, string OauthNonce, string OauthTimestamp)
+        public string CreateBaseString(string method, 
+                                    string status, 
+                                    string ResourceUrl, 
+                                    string OauthNonce, 
+                                    string OauthTimestamp)
         {
 
             var baseFormat = "oauth_consumer_key={0}&oauth_nonce={1}&oauth_signature_method={2}" +
                            "&oauth_timestamp={3}&oauth_token={4}&oauth_version={5}";
 
-            if (type == "POST")
+            if (method == "POST")
             {
                 baseFormat += "&status={6}";
             }
@@ -163,7 +176,7 @@ namespace APITwitter.App_Code
                                         Uri.EscapeDataString(status)
                                         );
 
-            baseString = string.Concat(type + "&", Uri.EscapeDataString(ResourceUrl), "&", Uri.EscapeDataString(baseString));
+            baseString = string.Concat(method + "&", Uri.EscapeDataString(ResourceUrl), "&", Uri.EscapeDataString(baseString));
 
             return baseString;
         }        

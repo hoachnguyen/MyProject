@@ -18,8 +18,10 @@ namespace APITwitter.Controllers
         public ActionResult Index()
         {
             List<Timeline> allPost = new List<Timeline>();
-
+            //get the json timeline data
             string json = oauthTwitter.GetTimeline();
+
+            //convert the return data to json and add the detail to models
             dynamic data = JsonConvert.DeserializeObject(json);
             foreach (var posts in data)
             {
@@ -36,12 +38,8 @@ namespace APITwitter.Controllers
 
         public ActionResult Post(string txtTweet)
         {
+            //call the function to post status on twitter
             oauthTwitter.PostTweet(txtTweet);
-            return RedirectToAction("Index");
-        }
-
-        public ActionResult Refresh()
-        {
             return RedirectToAction("Index");
         }
     }
