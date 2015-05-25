@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using APITwitter.Models;
 using APITwitter.App_Code;
+using Newtonsoft.Json;
 
 namespace APITwitter.Controllers
 {
@@ -16,19 +17,29 @@ namespace APITwitter.Controllers
         // GET: Twitter
         public ActionResult Index()
         {
-            var json = oauthTwitter.GetPost("hoachnguyen0313");
-            List<Timeline> allPost = oauthTwitter.GetTimeline(json);
+            List<Timeline> allPost = new List<Timeline>();
+            //get the json timeline data
+            string json = oauthTwitter.GetTimeline();
+
+            //convert the return data to json and add the detail to models
+            dynamic data = JsonConvert.DeserializeObject(json);
+            foreach (var posts in data)
+            {
+                Timeline post = new Timeline();
+                post.Name = posts.user.name;
+                post.ScreenName = posts.user.screen_name;
+                post.CreatedAt = posts.created_at;
+                post.TextPost = posts.text;
+                allPost.Add(post);
+
+            }
             return View(allPost);
         }
 
         public ActionResult Post(string txtTweet)
         {
-            oauthTwitter.PostTwitter(txtTweet);
-            return RedirectToAction("Index");
-        }
-
-        public ActionResult Refresh()
-        {
+            //call the function to post status on twitter
+            oauthTwitter.PostTweet(txtTweet);
             return RedirectToAction("Index");
         }
     }

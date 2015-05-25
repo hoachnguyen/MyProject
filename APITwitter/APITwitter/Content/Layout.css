@@ -82,3 +82,13 @@
 .button-display {
     display: inline-block;
 }
+table {
+    width: 700px;
+    table-layout: fixed;
+}
+
+
+th, td {
+    word-wrap: break-word;
+    overflow: hidden;
+}
